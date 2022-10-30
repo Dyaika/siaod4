@@ -2,17 +2,76 @@
 
 Node* createNodes(int n)
 {
+	//делаем отсортированное дерево
+	Node* binSortTree = nullptr;
+	for (int i = 0; i < n; i++) {
+		binSortTree = addBinarySort(rand() % 1000 / 2.1, binSortTree);
+	}
+	//делаем пустое сбалансированное дерево
+	Node* res = createAVLNodes(n);
+	int temp;
+	double cur;
+	//переносим данные из отсортированного в сбалансированное в правильном порядке
+	for (int i = 0; i < n; i++) {
+		temp = i;
+		cur = getData(temp, binSortTree)->data;
+		temp = i;
+		getData(temp, res)->data = cur;
+	}
+	//чистим-чистим
+	delete binSortTree;
+	return res;
+}
+
+Node* createAVLNodes(int n) {
 	if (n <= 0) {
 		return nullptr;
 	}
+
 	int nl, nr;
 	nl = n / 2;//половина левая
 	nr = n - nl - 1;//остаток за вычетом текущего элемента
 	Node* cur = new Node;
-	cur->data = rand() % 1000 / 2.1;
+	cur->data = 0;
 	cur->leftTree = createNodes(nl);
 	cur->rightTree = createNodes(nr);
 	return cur;
+}
+
+Node* getData(int& n, Node* root) {
+	Node* res;
+	if (root) {
+		res = getData(n, root->rightTree);
+		if (res) {
+			return res;
+		}
+		//cout << "n = " << n << " " << root->data << "\n";
+		if (n == 0) {
+			return root;
+		}
+		n--;
+		res = getData(n, root->leftTree);
+		if (res) {
+			return res;
+		}
+	}
+	return nullptr;
+}
+
+Node* addBinarySort(double x, Node* root) {
+	if (root) {
+		if (x < root->data) {
+			root->leftTree = addBinarySort(x, root->leftTree);
+		}
+		else {
+			root->rightTree = addBinarySort(x, root->rightTree);
+		}
+	}
+	else {
+		root = new Node;
+		root->data = x;
+	}
+	return root;
 }
 
 void printNodes(Node* root, int level, int L)
@@ -64,7 +123,6 @@ void MyTree::createTree(int n)
 	}
 	size = n;
 	root = createNodes(n);
-
 }
 
 MyTree::~MyTree()
@@ -149,5 +207,5 @@ Node::~Node()
 		delete rightTree;
 		rightTree = nullptr;
 	}
-	//cout << "\n~\n";
+	//cout << "\n~" << this->data << "\n";
 }

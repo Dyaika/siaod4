@@ -46,6 +46,15 @@ public:
 	static void test();
 };
 
+//вспомогательная функция, добавляет запись в дерево сортировки
+Node* addBinarySort(double x, Node* root);
+
+//вспомогательная функция, создает сбалансированное дерево нужного размера
+Node* createAVLNodes(int n);
+
+//вспомогательная функция, возвращает указатель на элемент под номером n при обходе в глубину
+Node* getData(int& n, Node* root);
+
 //Создает дерево (для реализации без MyTree, используется в createTree())
 Node* createNodes(int n);
 
